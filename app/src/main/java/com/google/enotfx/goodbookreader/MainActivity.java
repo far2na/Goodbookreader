@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
     final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
     private List<String> fileList;
+    private String currentFolder = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +39,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         fileList = new ArrayList<>();
-        selectFolder(Environment.getExternalStorageDirectory().getAbsolutePath());
+        fileList.clear();
+        currentFolder = Environment.getExternalStorageDirectory().getAbsolutePath();
+        selectFolder("");
         ArrayAdapter<String> directoryList = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, fileList);
 
@@ -48,20 +51,37 @@ public class MainActivity extends AppCompatActivity {
         OnItemClickListener mMessageClickedHandler = new OnItemClickListener() {
             public void onItemClick(AdapterView parent, View v, int position, long id)
             {
-                selectFolder(fileList.get(position));
+                String selectedItem = fileList.get(position);
+                selectFolder(selectedItem);
                 ListView lv = findViewById(R.id.list_view);
                 lv.invalidateViews();
+                lv.setSelectionAfterHeaderView();
             }
         };
         listView.setOnItemClickListener(mMessageClickedHandler);
     }
 
     public void selectFolder(String item) {
-        File root = new File(item);
-        File[] files = root.listFiles();
         fileList.clear();
+        if (item.indexOf(getString(R.string.previous)) != -1) {
+            int index = currentFolder.lastIndexOf("/");
+            if (index != -1) {
+                currentFolder = currentFolder.substring(0, index);
+            }
+            if (!currentFolder.equals(Environment.getExternalStorageDirectory().getAbsolutePath())) {
+                fileList.add(currentFolder + "/" + getString(R.string.previous));
+            }
+
+        } else {
+            if (!item.isEmpty()) {
+                fileList.add(currentFolder + "/" + getString(R.string.previous));
+                currentFolder += "/" + item;
+            }
+        }
+        File root = new File(currentFolder);
+        File[] files = root.listFiles();
         for (File file : files){
-            fileList.add(file.getPath());
+            fileList.add(file.getName());
         }
     }
 
