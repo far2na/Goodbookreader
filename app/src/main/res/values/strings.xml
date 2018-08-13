@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Goodbookreader</string>
+    <string name="add_book">Add book</string>
+    <string name="book_list">Book list:</string>
+</resources>
