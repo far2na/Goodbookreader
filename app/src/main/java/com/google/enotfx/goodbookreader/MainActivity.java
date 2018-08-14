@@ -19,6 +19,9 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -42,8 +45,8 @@ public class MainActivity extends AppCompatActivity {
         fileList.clear();
         currentFolder = Environment.getExternalStorageDirectory().getAbsolutePath();
         selectFolder("");
-        ArrayAdapter<String> directoryList = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1, fileList);
+        ArrayAdapter<String> directoryList = new ArrayAdapter<>(this, R.layout.custom_design,
+                R.id.book_list_view, fileList);
 
         ListView listView = findViewById(R.id.list_view);
         listView.setAdapter(directoryList);
@@ -55,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
                 selectFolder(selectedItem);
                 ListView lv = findViewById(R.id.list_view);
                 lv.invalidateViews();
-                lv.setSelectionAfterHeaderView();
+                //lv.setSelectionAfterHeaderView();
             }
         };
         listView.setOnItemClickListener(mMessageClickedHandler);
@@ -79,15 +82,35 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         File root = new File(currentFolder);
-        File[] files = root.listFiles();
-        for (File file : files){
-            fileList.add(file.getName());
+        File[] allFiles = root.listFiles();
+        List<String> files = new ArrayList<>();
+        List<String> dirs = new ArrayList<>();
+        for (File file : allFiles){
+            String fileName = file.getName();
+            if (fileName.charAt(0) != '.') {
+                if (file.isDirectory())
+                {
+                    dirs.add(fileName);
+                } else {
+                    files.add(fileName);
+                }
+            }
         }
+        IgnoreCaseComparator icc = new IgnoreCaseComparator();
+        Collections.sort(files, icc);
+        Collections.sort(dirs, icc);
+        fileList.addAll(dirs);
+        fileList.addAll(files);
     }
 
     public void addBook(View view) {
-        Button bt = findViewById(R.id.button2);
-        bt.setBackgroundColor(Color.RED);
+
+    }
+}
+
+class IgnoreCaseComparator implements Comparator<String> {
+    public int compare(String strA, String strB) {
+        return strA.compareToIgnoreCase(strB);
     }
 }
 
