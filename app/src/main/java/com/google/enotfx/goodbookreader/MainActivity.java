@@ -1,6 +1,7 @@
 package com.google.enotfx.goodbookreader;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Environment;
@@ -104,7 +105,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addBook(View view) {
-
+        Intent intent = new Intent(this, AddNewBook.class);
+        startActivity(intent);
     }
 }
 

@@ -3,4 +3,6 @@
     <string name="add_book">Add book</string>
     <string name="book_list">Book list:</string>
     <string name="previous">..</string>
+    <string name="add_new_book">Add new book</string>
+    <string name="text_header2">Select file:</string>
 </resources>
