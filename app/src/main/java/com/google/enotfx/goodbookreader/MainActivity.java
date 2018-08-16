@@ -27,7 +27,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
+    public static final int FILE_REQUEST = 1;
+    private final int REQUEST_CODE_ASK_PERMISSIONS = 123;
     private List<String> booksList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +49,21 @@ public class MainActivity extends AppCompatActivity {
     }
     public void addBook(View view) {
         Intent intent = new Intent(this, AddNewBook.class);
-        startActivity(intent);
+        startActivityForResult(intent, FILE_REQUEST);
+    }
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == FILE_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                List<String> reply = new ArrayList<>();
+                reply.add(data.getStringExtra(AddNewBook.EXTRA_FILE));
+                ArrayAdapter<String> booksList = new ArrayAdapter<>(this, R.layout.custom_design,
+                        R.id.book_list_view, reply);
+
+                ListView listView = findViewById(R.id.list_view);
+                listView.setAdapter(booksList);
+            }
+        }
     }
 }
 
